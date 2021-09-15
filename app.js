@@ -34,6 +34,6 @@ app.listen(PORT, (error) => {
         console.log("Error on listening: " + error)
     }
     else {
-        console.log("Application listening on port: " + PORT);
+        console.log("Server Application listening on port: " + PORT);
     }
 })
