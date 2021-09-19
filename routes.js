@@ -6,16 +6,72 @@ const wallet = require('./models/wallet.js')
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
+const Transaction = require('./tranaction.js')
 router.use(express.json())
 router.use(bodyParser.urlencoded({extended: false}))
+router.use(cookieParser());
 router.get('/', (req, res) => {
   res.render("home")
 })
 
+router.post("/login", async (req,res)=>{
+     
+    let {email, password} = req.body;
+
+    if(!email || !password)
+    {
+        res.json({code: 404, message: 'Please enter both email and password'});
+    }
+    else
+    {
+        let user = await wallet.find({email})
+        if(user.length==0)
+        {
+            res.json({code: 404, message:'User not found'});
+        }
+        else
+        {  try{
+            let temp = await bcrypt.compare(password, user[0].password)
+            if(temp)
+            {
+                let payload = {id: user[0]._id};
+                let token = jwt.sign(payload, process.env.password)
+                res.cookie("jwt", token);
+                res.json({code: 200, message:'Login Successful'})
+            }
+            else
+            {
+                res.json({code: 404, message: 'Incorrect Password'})
+            }
+            
+
+        }catch(error)
+        {
+            res.json({code: 404, message: 'Incorrect Password'})
+
+        }
+            
+        }
+    }
+     
+
+})
+
+router.get('/sign-up', (req,res) => {
+    res.render("signup");
+})
+
+router.get('/login', (req,res) => {
+    res.render("login");
+})
+
+
 
 router.post('/createWallet', async (req, res) => {
        var {fname, lname, email, password, phone} = req.body;
-       console.log(req.body)
+       
        if(!fname || !lname || !email || !password || !phone)
        {
         res.json({code: 404, message:'Enter all the fields'})
@@ -25,7 +81,7 @@ router.post('/createWallet', async (req, res) => {
        let hashedPassword = "Ayush" //await bcrypt.hash(password, 10);
        const new_wallet = new wallet({fname, lname, email, password: hashedPassword, phone, verifyId: temp_verification_id});
        new_wallet.save().then((confirmation)=>{
-                     res.json({code: 200, message: 'Wallet Created Successfully'})
+                     res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'})
                      send_verification_mail(temp_verification_id, email)
        }).catch((error)=>{
          if(error.code ==11000)
@@ -258,6 +314,14 @@ function send_verification_mail(temp_verification_id, email)
 
 }
 
+router.get("/test", async (req,res)=>{
+        //let temp = await wallet.find({email: 'kryptonites.ju@gmail.com'});
+      //  let mitthi = await  Transaction.isWalletValid("6141ff865223ffd0668df575")
+        //console.log(mitthi)
+        let ayush = await Transaction.transfer("6141ff865223ffd0668df375", "6145c8c28ac0bf4694510f06", 500);
+        console.log(ayush)
+        res.json({ayush})
+})
 
 
 module.exports = router
