@@ -6,9 +6,11 @@ const wallet = require('./models/wallet.js')
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
+const Transaction = require('./transaction.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
-const Transaction = require('./tranaction.js')
+const transactions = require('./models/transaction.js')
+const growth = require('./models/growth.js')
 router.use(express.json())
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(cookieParser());
@@ -58,16 +60,120 @@ router.post("/login", async (req,res)=>{
      
 
 })
+async function checkVerfied(req,res, next)
+{
+    if(!req.cookies.jwt)
+    {
+        res.redirect("/login");
+    }
+    else
+    {
+        var token = req.cookies.jwt;
+        //console.log(token)
+        //console.log(token)
+        try{
+
+            let payload = jwt.verify(token, process.env.password);
+             let tempUser = await wallet.findById({_id: payload.id})
+             //console.log(tempUser)
+             if(tempUser.verified)
+             {   
+                 next();
+             }
+             else
+             {
+                 res.render("notyetverified");
+             }
+             //console.log(tempUser)
+
+        }
+        catch(error)
+        {
+            res.render("someerroroccured");
+        }
+    }
+}
+async function loginChecker(req,res,next)
+{
+    var token = req.cookies.jwt;
+    if(!token)
+    {
+        next();
+    }
+    else
+    {
+       
+        try{
+        
+            let payload = jwt.verify(token, process.env.password);
+          
+            res.redirect("/console")
+             //console.log(tempUser)
+    
+        }
+        catch(error)
+        {
+            next();
+        }
+
+    }
+   
+
+}
 
 router.get('/sign-up', (req,res) => {
     res.render("signup");
 })
 
-router.get('/login', (req,res) => {
+router.get('/login',loginChecker, (req,res) => {
     res.render("login");
 })
 
+router.get("/console", checkVerfied, async (req,res)=>
+{
 
+    var token = req.cookies.jwt;
+    try{
+
+        let payload = jwt.verify(token, process.env.password);
+         let tempUser = await wallet.findById({_id: payload.id})
+         let all_transaction = await transactions.find({$or:[  {'from':payload.id}, {'to':payload.id} ]})
+         res.render("console", {fname: tempUser.fname, balance: tempUser.balance, investment: tempUser.investment, currentInvestment: tempUser.currentInvestment, id: tempUser._id,all_transaction})
+        }
+        catch(error)
+        {
+            res.render("someerroroccured")
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+})
+router.get("/signout", (req,res)=>{
+    res.clearCookie("jwt");
+    res.redirect("/");
+})
 
 router.post('/createWallet', async (req, res) => {
        var {fname, lname, email, password, phone} = req.body;
@@ -78,7 +184,7 @@ router.post('/createWallet', async (req, res) => {
        }
        
        var temp_verification_id = uuid + Date.now()
-       let hashedPassword = "Ayush" //await bcrypt.hash(password, 10);
+       let hashedPassword = await bcrypt.hash(password, 10);
        const new_wallet = new wallet({fname, lname, email, password: hashedPassword, phone, verifyId: temp_verification_id});
        new_wallet.save().then((confirmation)=>{
                      res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'})
@@ -315,13 +421,30 @@ function send_verification_mail(temp_verification_id, email)
 }
 
 router.get("/test", async (req,res)=>{
-        //let temp = await wallet.find({email: 'kryptonites.ju@gmail.com'});
-      //  let mitthi = await  Transaction.isWalletValid("6141ff865223ffd0668df575")
-        //console.log(mitthi)
-        let ayush = await Transaction.transfer("6141ff865223ffd0668df375", "6145c8c28ac0bf4694510f06", 500);
-        console.log(ayush)
-        res.json({ayush})
+    
+ Transaction.transfer( '6146fd46286ac4de6172a492','6146d87580ba34b052b389cf', 2000)
+        res.json({message: 'done'})
+       
 })
+
+
+
+
+
+
+
+router.get("/prices",async (req,res)=>{
+   let priceList =  await growth.find({}).sort({onDate: -1}).limit(10)
+   res.json({priceList})
+
+
+
+})
+
+
+
+
+
 
 
 module.exports = router

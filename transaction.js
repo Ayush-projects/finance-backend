@@ -1,5 +1,6 @@
 const { findByIdAndUpdate } = require('./models/wallet.js');
 const wallet = require('./models/wallet.js')
+const transactions = require('./models/transaction')
 class Transaction{
     static async isWalletValid(id)
     {
@@ -32,12 +33,19 @@ class Transaction{
 
     static async transfer(from, to, amount)
     {
-        if(Transaction.isWalletValid(from) && Transaction.isWalletValid(to) && Transaction.isBalanceAvailable(from, amount))
+        let a = await Transaction.isWalletValid(from);
+        let b = await Transaction.isWalletValid(to)
+        let c = await Transaction.isBalanceAvailable(from, amount)
+
+        if(a && b && c )
         {
             let tempList1 = await wallet.find({_id: from});
             let temp = await wallet.findByIdAndUpdate({_id: from}, {balance: tempList1[0].balance-amount});
             let tempList2 = await wallet.find({_id: to});
             let temp1 = await wallet.findByIdAndUpdate({_id: to}, {balance: tempList2[0].balance+amount});
+            let temp_transaction = new transactions({from, to, amount})
+            let data = await temp_transaction.save();
+          //  console.log(data);
             return true;
             
         }
