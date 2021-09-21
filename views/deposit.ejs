@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Deposit</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://user-images.githubusercontent.com/52379890/133371696-2488b42d-62fa-4210-b49f-9ebfea97fcd0.png">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+      body{
+            font-family: "Work Sans", sans-serif;
+            box-sizing: border-box;
+        }
+        :focus{
+            outline: none;
+        }
+        .holder{
+            width: 500px;
+            background: #FFA73B;
+            height: 350px;
+            margin: 50px auto;
+            outline: 5px solid #f2f2f2;
+        }
+        .holder .parent{
+            background-color: white;
+            width: calc(100% - 50px);
+            height: calc(100% - 50px);
+            display: inline-block;
+            margin-left: 25px;
+            margin-top: 25px;
+            border-radius: 7px;
+        }
+        .holder .parent h3{
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 0;
+        }
+        form{
+            display: block;
+            border-bottom: 1px dashed #ccc;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        form > div{
+            margin: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+        }
+        form > div::before{
+            content:"\f2b6";
+            font-weight: 900;
+            font-family: "Font Awesome 5 Free";
+            position: absolute;
+            color: #777;
+            left: -1px;
+        }
+        form > div:nth-child(2):before{
+            content:"\f023";
+        }
+        form div input{
+            border: none;
+            font-family: "Work Sans", sans-serif;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+        div input + .border{
+            position: absolute;
+            left: 50%;
+            bottom: -1px;
+            background-color: #FFA73B;
+            height: 1px;
+            width: 0;
+            transition: .3s;
+            display: block;
+        }
+        div input:focus + .border{
+            width: 100%;
+            left: 0;
+        }
+        form .private-inp{
+            border: none;
+            font-family: "work sans",sans-serif;
+            display: block;
+            margin: auto;
+            background: #FFA73B;
+            width: 90%;
+            padding: 10px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        form p{
+            margin: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 15px;
+        }
+        form p a{
+            text-decoration: none;
+            font-weight: bold;
+            color: #FFA73B;
+        }
+        .parent h4{
+            text-align: center;
+            color: #777;
+        }
+        .social{
+            text-align: center;
+            margin-top: -8px;
+        }
+        .social i{
+            width: 20px;
+            height: 20px;
+            background: #3B5998;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 50%;
+            color: white;
+        }
+        .social i:nth-child(2){
+            background: #1DA1F2;
+        }
+        .social i:nth-child(3){
+            background: #DB4437;
+        }
+        :focus::placeholder{
+            opacity: 0;
+            transition: .5s;
+        }
+  </style>
+</head>
+<body>
+
+
+<section>
+	<div class="left-sidebar">
+	
+		<br><br><br>
+		<span class="plus">+</span>
+		<i class="fa fa-th-large" style="margin-top: 50px;"></i>
+		<i class="fa fa-align-right"></i>
+		<i class="fa fa-reorder"></i>
+		<i class="fa fa-line-chart"></i>
+
+
+		<div class="bottom">
+			<i class="fa fa-bell-o"></i>
+		</div>
+	</div>
+
+	<div class="main">
+			<a href="#" style="text-decoration: none;"><i class="fa fa-reorder menu-icon"></i></a>
+			<i class="fa fa-long-arrow-left arrow1"></i>
+			<i class="fa fa-long-arrow-right arrow1"></i>
+			
+           
+        
+
+			<div class="clearfix"></div>
+			<p class="p-1" >Hi, <%= fname %> <strong><span style="color: black;">Wallet Id: <%=id %></span></strong></p>
+
+			<div class="box" style="margin-left: 0px;">
+				<div class="content">
+					<i class="fa fa-money icons"></i>
+					<p>Balance</p>
+					<span>₹ <%=balance %></span>
+				</div>
+			</div>
+
+			<div class="box">
+				<div class="content">
+					<i class="fa fa-bar-chart icons"></i>
+					<p>Investments</p>
+					<span id="investment">₹ <%=investment%></span>
+				</div>
+			</div>
+
+			<div class="box">
+				<div class="content">
+					<i class="fa fa-pie-chart icons"></i>
+					<p>Current Value</p>
+					<span>₹ <%=currentInvestment%></span>
+				</div>
+			</div>
+
+
+				<div class="clearfix" ></div>
+				<!-- <br> -->
+                <!-- <div id="message" style="width: 100%; text-align: center; padding: 5px; height: 40px; background-color: red; color: white; font-size: larger; font-weight: bold; display: none;"></div> -->
+                <div class="holder" style="margin-left: 300px;" >
+                   <div class="parent" style="margin-left: 550px;">
+                       
+                        <form action='https://test.payu.in/_payment' method='post'>
+                            <div>
+                                <input type="email" placeholder="Email *" name="email" id="email" required>
+                                <span class="border"></span>
+                            </div>
+                            <input type="hidden" name="key" value="y8MbU3Jm" />
+                            <input type="hidden" name="txnid" value= />
+                            <input type="hidden" name="productinfo" value="deposit" />
+                            <input type="hidden" name="amount" value= />
+                            <input type="hidden" name="email" value= />
+                            <input type="hidden" name="firstname" value= />
+                            <input type="hidden" name="lastname" value= />
+                            <input type="hidden" name="surl" value="https://ewallet-server.herokuapp.com/deposit-success" />
+                            <input type="hidden" name="furl" value="https://ewallet-server.herokuapp.com/deposit-failure" />
+                            <input type="hidden" name="phone" value= />
+                            <input type="hidden" name="hash" value= />
+                            <input type="submit" value="submit" class="private-inp"></form>
+                        
+                    </div>
+                </div>
+                   
+                    
+
+                   
+                 
+
+
+	</div>
+
+	<div class="right-sidebar">
+
+
+
+	</div>
+</section>
+
+
+
+<script src="chart.js"></script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".fa-long-arrow-left").click(function(){
+			$(".left-sidebar").hide(500);
+			$(".main").css('max-width','72.5%');
+			$(".box").css('width','181px');
+		});
+
+		$(".fa-long-arrow-right").click(function(){
+			$(".left-sidebar").show(500);
+			$(".main").css('max-width','63.6%');
+			$(".box").css('width','159px');
+		});
+
+		$(".menu-icon").click(function(){
+			$(".left-sidebar").slideToggle();
+			$(".main").css('max-width','75%');
+		});
+	});
+    
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const transactions = require('./models/transaction.js')
 const growth = require('./models/growth.js')
+const crypto = require('crypto-js/sha256')
 router.use(express.json())
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(cookieParser());
@@ -121,6 +122,32 @@ async function loginChecker(req,res,next)
 
 }
 
+async function loginVerifier(req,res,next)
+{
+    var token = req.cookies.jwt;
+    if(!token)
+    {
+       res.redirect("/login")
+    }
+    else
+    {
+       
+        try{
+        
+            let payload = jwt.verify(token, process.env.password);
+          
+            next();
+             //console.log(tempUser)
+    
+        }
+        catch(error)
+        {res.redirect("/login")
+        }
+
+    }
+
+}
+
 router.get('/sign-up', (req,res) => {
     res.render("signup");
 })
@@ -175,6 +202,32 @@ router.get("/signout", (req,res)=>{
     res.redirect("/");
 })
 
+router.get("/getinfo", async (req,res)=>{
+
+    if(!req.cookies.jwt)
+    {
+        res.json({code: 404, message: 'You need to login first.'})
+    }
+    else
+    {   var token = req.cookies.jwt;
+        try{
+           
+            let payload = jwt.verify(token, process.env.password);
+            let user =await  wallet.findById({_id: payload.id})
+            let {fname, lname, email, phone, balance, investment, currentInvestment, verified} = user;
+            res.json({fname,lname,email, phone, balance, investment,currentInvestment,verified});
+
+
+    
+        }
+        catch(error)
+        {res.json({code: 404, message:'Some error occured'})
+        }
+
+        
+    }
+})
+
 router.post('/createWallet', async (req, res) => {
        var {fname, lname, email, password, phone} = req.body;
        
@@ -199,6 +252,22 @@ router.post('/createWallet', async (req, res) => {
        })
 })
 
+router.post('/deposit-success', loginVerifier, (req, res)=>{
+    res.render("deposit_success")
+})
+router.post("/deposit-failure",loginVerifier, (req,res)=>{
+    res.render("deposit_failure");
+})
+
+router.get("/deposit", loginVerifier, async (req,res)=>{
+    let payload = jwt.verify(req.cookies.jwt, process.env.password);
+    let user = await wallet.findById({_id: payload.id})
+   let {fname, lname,email,phone, balance, investment, currentInvestment} = user;
+   let txnid = uuid;
+    res.render("deposit", {fname, lname, email, phone, txnid, balance, investment, currentInvestment, id: user._id })
+
+})
+
 router.get('/walletVerify/:id',async (req,res)=>{
    id = req.params.id
    wallet.findOneAndUpdate({verifyId: id}, {verified: true}).then((confirmation)=>{
@@ -209,6 +278,10 @@ router.get('/walletVerify/:id',async (req,res)=>{
    }).catch((error)=>{
    res.render("error_in_verification")
    })
+})
+
+router.get('/hashgenerator', (req,res)=>{
+  
 })
 
 function send_verification_mail(temp_verification_id, email)
@@ -422,8 +495,10 @@ function send_verification_mail(temp_verification_id, email)
 
 router.get("/test", async (req,res)=>{
     
- Transaction.transfer( '6146fd46286ac4de6172a492','6146d87580ba34b052b389cf', 2000)
-        res.json({message: 'done'})
+//  Transaction.transfer( '6146fd46286ac4de6172a492','6146d87580ba34b052b389cf', 2000)
+//         res.json({message: 'done'})
+res.render("deposit_failure.ejs")
+
        
 })
 
