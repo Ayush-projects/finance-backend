@@ -266,11 +266,20 @@ router.post('/createWallet', async (req, res) => {
        })
 })
 
-router.post('/deposit-success', (req, res)=>{
-    console.log(req.body)
+router.post('/deposit-success', async (req, res)=>{
+   // console.log(req.body)
     res.render("deposit_success")
+    let id = req.body.txnid;
+    if(req.body.status=='success')
+    {
+        let user = await wallet.findById({_id: id});
+        let {balance} = user;
+        let updated_account = await wallet.findByIdAndUpdate({_id: id}, {balance: balance+parseFloat(req.body.net_amount_debit)});
+        //console.log(updated_account);
+    }
 })
 router.post("/deposit-failure", (req,res)=>{
+    //console.log(req.body)
     res.render("deposit_failure");
 })
 
@@ -281,6 +290,19 @@ router.get("/deposit", loginVerifier, async (req,res)=>{
    let txnid = uuid;
     res.render("deposit", {fname, lname, email, phone, txnid, balance, investment, currentInvestment, id: user._id })
 
+})
+
+router.get('/updateInvestments', async (req,res)=>{
+    
+       let priceList =  await growth.find({}).sort({onDate: -1}).limit(10)
+       let user_list = await wallet.find({})
+       for(let i=0; i<user_list.length; i++)
+       {
+           user_list[i].currentInvestment = user_list[i].investment*priceList[0].price;
+           await user_list[i].save()
+
+       }
+       res.json({code: 200, message: 'Done'})
 })
 
 router.get('/walletVerify/:id',async (req,res)=>{
