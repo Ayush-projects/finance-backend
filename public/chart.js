@@ -212,7 +212,7 @@ for (let circle of document.querySelectorAll("svg circle[hovering]")) {
                     .append("text")
                         .x(g_x+5)
                         .y(g_y+30)
-                        .text(`${title}: ${circle.getAttribute("data-value")} EGP`)
+                        .text(`${"Price"}: ₹ ${circle.getAttribute("data-value")}`)
         document.querySelector(`circle[animetion][unique="${circle.getAttribute("unique")}"]`).setAttribute("start","")
     })
     circle.addEventListener("mouseout", _ => {
