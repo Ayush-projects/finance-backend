@@ -30,7 +30,21 @@
        <br>
        <br>
        <p>
-          <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white" style="color: rgb(83, 80, 80);" data-bs-toggle="modal" data-bs-target="#exampleModal">Confirm</a>
+        <form action='https://secure.payu.in/_payment' method='post'>
+            <input type="hidden" name="key" value=<%=key%> >
+            <input type="hidden" name="txnid" value=<%=txnid%> >
+            <input type="hidden" name="productinfo" value="deposit" >
+            <input type="hidden" name="amount" value=<%=amount%>>
+            <input type="hidden" name="email" value=<%=email%>>
+            <input type="hidden" name="firstname" value=<%=fname%> >
+            <input type="hidden" name="lastname" value=<%=lname%> >
+            <input type="hidden" name="surl" value="https://ewallet-server.herokuapp.com/deposit-success" >
+            <input type="hidden" name="furl" value="https://ewallet-server.herokuapp.com/deposit-failure" >
+            <input type="hidden" name="phone" value=<%=phone%> >
+            <input type="hidden" name="hash" value=<%=hash%> >
+            
+          <button type="submit" class="btn btn-lg btn-secondary fw-bold border-white bg-white private-inp" style="color: rgb(83, 80, 80);" data-bs-toggle="modal" data-bs-target="#exampleModal">Confirm</button>
+        </form>
         </p>
       </main>
    

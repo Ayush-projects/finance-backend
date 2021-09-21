@@ -266,11 +266,11 @@ router.post('/createWallet', async (req, res) => {
        })
 })
 
-router.post('/deposit-success', loginVerifier, (req, res)=>{
+router.post('/deposit-success', (req, res)=>{
     console.log(req.body)
     res.render("deposit_success")
 })
-router.post("/deposit-failure",loginVerifier, (req,res)=>{
+router.post("/deposit-failure", (req,res)=>{
     res.render("deposit_failure");
 })
 
