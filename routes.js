@@ -206,7 +206,7 @@ router.post('/confirmDeposit',loginVerifier,async  (req,res)=>{
     let amount = parseFloat(req.body.amount)
    // console.log(amount)
     let {fname, lname,email,phone } = user;
-    let txnid = user._id;
+    let txnid = user._id+'-'+Date.now();
  //   console.log(`${key}|${txnid}|${amount.toString()}|${'deposit'}|${fname}|${email}|||||||||||${salt}`)
     let hash = crypto(`${key}|${txnid}|${amount.toString()}|${'deposit'}|${fname}|${email}|||||||||||${salt}`).toString();
       res.render("confirm_deposit", {fname, lname, txnid, hash, email, phone, amount,key});
@@ -269,7 +269,8 @@ router.post('/createWallet', async (req, res) => {
 router.post('/deposit-success', async (req, res)=>{
    // console.log(req.body)
     res.render("deposit_success")
-    let id = req.body.txnid;
+    let id = req.body.txnid.split("-")[0];
+   // console.log(id)
     if(req.body.status=='success')
     {
         let user = await wallet.findById({_id: id});
@@ -280,6 +281,8 @@ router.post('/deposit-success', async (req, res)=>{
 })
 router.post("/deposit-failure", (req,res)=>{
     //console.log(req.body)
+    let id = req.body.txnid.split("-")[0];
+//console.log(id)
     res.render("deposit_failure");
 })
 
