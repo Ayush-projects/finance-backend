@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const transactions = require('./models/transaction.js')
 const growth = require('./models/growth.js')
-const crypto = require('crypto-js/sha256')
+const crypto = require('crypto-js/sha512')
 router.use(express.json())
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(cookieParser());
@@ -197,6 +197,20 @@ router.get("/console", checkVerfied, async (req,res)=>
     
 
 })
+router.post('/confirmDeposit',loginVerifier,async  (req,res)=>{
+   
+    let payload = jwt.verify(req.cookies.jwt, process.env.password);
+    let key = 'y8MbU3Jm'
+    let salt ='48WeKjdj'
+    let user = await wallet.findById({_id: payload.id})
+    let amount = parseFloat(req.body.amount)
+   // console.log(amount)
+    let {fname, lname,email,phone } = user;
+    let txnid = user._id;
+ //   console.log(`${key}|${txnid}|${amount.toString()}|${'deposit'}|${fname}|${email}|||||||||||${salt}`)
+    let hash = crypto(`${key}|${txnid}|${amount.toString()}|${'deposit'}|${fname}|${email}|||||||||||${salt}`).toString();
+      res.render("confirm_deposit", {fname, lname, txnid, hash, email, phone, amount,key});
+})
 router.get("/signout", (req,res)=>{
     res.clearCookie("jwt");
     res.redirect("/");
@@ -253,6 +267,7 @@ router.post('/createWallet', async (req, res) => {
 })
 
 router.post('/deposit-success', loginVerifier, (req, res)=>{
+    console.log(req.body)
     res.render("deposit_success")
 })
 router.post("/deposit-failure",loginVerifier, (req,res)=>{
