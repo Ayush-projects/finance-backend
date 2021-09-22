@@ -21,24 +21,40 @@ __URL     :__   https://ewallet-server.herokuapp.com/createWallet
 
 __Body    :__
   
-    xyz
+    {
+        "fname": "Ayush",
+        "lname": "Addhyan",
+        "email": "testing@gmail.com",
+        "phone": "0123456789",
+        "password": "password"
+    }
     
 
 ### Response
 
 #### Case 1: Wallet created Successfully
-Response:
+
+    {
+        "code": 200,
+        "message": "Wallet Created Successfully, Please check your email and verify"
+    }
 
 
 
 #### Case 2: Either of the fields missing in POST request
-Response:
+
+    Response
 
 #### Case 3: User registering again with same email id
-Response: 
- 
+
+    {
+        "code": 404,
+        "message": "User already registed with the given email ID"
+    }
+    
 #### Case 4: Some server side error occurred
-Response: 
+
+    Response 
 
 
 
@@ -54,10 +70,26 @@ __URL     :__   https://ewallet-server.herokuapp.com/login
 
 __Body    :__
   
-    xyz
+     {
+        "email":"kryptonites.ju@gmail.com",
+        "password": "Ayush"
+    }
     
 
-### Responses
+### Response
+
+#### Case 1: Logged-in Successfully
+    {
+        "code": 200,
+        "message": "Login Successful"
+    }
+    
+
+#### Case 2: Incorrect Password
+    {
+        "code": 404,
+        "message": "Incorrect Password"
+    }
 
 
 
@@ -76,5 +108,49 @@ __URL     :__   https://ewallet-server.herokuapp.com/signout
 
 
 > **_NOTE  :_** **Request with the jwt token as cookies and in response the server will clear the cookie “jwt”**
+
+
+## Get Wallet Info
+
+### Request
+
+__Action  :__   Get Wallet Info
+
+__Method  :__   GET
+
+__URL     :__   https://ewallet-server.herokuapp.com/getInfo
+  
+
+### Response
+
+#### Case 1 : If there is a “jwt” token stored as cookie (When successful login), it will return all the account information.
+
+    xyz
+
+
+#### Case 2 : If the token is not stored (i.e. the user is not logged in) then it will return 
+
+    xyz
+
+
+#### Case 3 : If there is some server side error it will return 
+
+    xyz
+
+
+## Get Price Index for last 10 days relative to Re.1
+
+### Request
+
+__Action    :__     Get Price Index for last 10 days relative to Re.1
+
+__Method    :__     GET
+
+__URL       :__     https://ewallet-server.herokuapp.com/prices 
+    
+
+### Response
+
+    xyz
 
 
