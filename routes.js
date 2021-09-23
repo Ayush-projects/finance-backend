@@ -254,7 +254,14 @@ router.post('/createWallet', async (req, res) => {
        let hashedPassword = await bcrypt.hash(password, 10);
        const new_wallet = new wallet({fname, lname, email, password: hashedPassword, phone, verifyId: temp_verification_id});
        new_wallet.save().then((confirmation)=>{
-                     res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'})
+                     res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'}
+                      
+                     
+                     
+                     
+                     
+                     
+                     )
                      send_verification_mail(temp_verification_id, email)
        }).catch((error)=>{
          if(error.code ==11000)
@@ -275,15 +282,27 @@ router.post('/deposit-success', async (req, res)=>{
     {
         let user = await wallet.findById({_id: id});
         let {balance} = user;
+        let temp_transaction = new transactions({from:'Bank Deposit Success', to: id, amount: parseFloat(req.body.net_amount_debit)})
+        await temp_transaction.save();
         let updated_account = await wallet.findByIdAndUpdate({_id: id}, {balance: balance+parseFloat(req.body.net_amount_debit)});
         //console.log(updated_account);
     }
 })
-router.post("/deposit-failure", (req,res)=>{
+router.post("/deposit-failure", async (req,res)=>{
     //console.log(req.body)
-    let id = req.body.txnid.split("-")[0];
+    //let id = req.body.txnid.split("-")[0];
 //console.log(id)
     res.render("deposit_failure");
+    let id = req.body.txnid.split("-")[0];
+   // console.log(id)
+    if(req.body.status=='failure')
+    {
+        let user = await wallet.findById({_id: id});
+        let {balance} = user;
+        let temp_transaction = new transactions({from:'Bank Deposit Failure', to: id, amount: parseFloat(req.body.net_amount_debit)})
+        await temp_transaction.save();
+        //console.log(updated_account);
+    }
 })
 
 router.get("/deposit", loginVerifier, async (req,res)=>{
@@ -537,6 +556,7 @@ router.get("/test", async (req,res)=>{
     
 //  Transaction.transfer( '6146fd46286ac4de6172a492','6146d87580ba34b052b389cf', 2000)
 //         res.json({message: 'done'})
+
 res.render("deposit_failure.ejs")
 
        

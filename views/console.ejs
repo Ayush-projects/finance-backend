@@ -87,13 +87,16 @@
 			<p class="p2">R</p><p class="head">₹ <%=all_transaction[i].amount %> <br><span>From: <strong><%=all_transaction[i].from %></strong></span></p>
 			<i class="fa fa-ellipsis-h dots"></i>
 		</div>
-		<% } else{%>
+		<% } else if(id==all_transaction[i].from){%>
         
 		<div class="nub-sec">
 			<p class="p2" style="background: #f5d1d1; color: #957272;">S</p><p class="head">₹ <%=all_transaction[i].amount%> <br><span>To:  <strong><%=all_transaction[i].from %></strong></span></p>
 			<i class="fa fa-ellipsis-h dots"></i>
 		</div>
-		<%} %>
+		<%}  %>
+
+
+		
   <%}%>
 		
 
