@@ -1,4 +1,4 @@
- fetch("/prices").then((res)=>{return res.json()}).then((f_res)=>{
+fetch("/prices").then((res)=>{return res.json()}).then((f_res)=>{
     // console.log(f_res)
     function D3(svg) {
         const self = {
@@ -51,7 +51,8 @@
     }
 
 let price = parseFloat(document.getElementById("investment").innerHTML.substr(1));
-
+console.log(f_res.priceList[9].price)
+console.log(typeof(f_res.priceList[9].price))
 let data = {"T-9 day" : price*f_res.priceList[9].price,"T-8 day" :price*f_res.priceList[8].price,"T-7 day" : price*f_res.priceList[7].price,"T-6 day":price*f_res.priceList[6].price, "T-5 day"  : price*f_res.priceList[5].price,"T-4 day":price*f_res.priceList[4].price,  "T-3 day": price*f_res.priceList[3].price, "T-2 day":price*f_res.priceList[2].price,"Yesterday": price*f_res.priceList[1].price, "Today":price*f_res.priceList[0].price},
     w = 600,
     h = 300,

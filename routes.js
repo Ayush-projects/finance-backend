@@ -12,11 +12,82 @@ const cookieParser = require('cookie-parser')
 const transactions = require('./models/transaction.js')
 const growth = require('./models/growth.js')
 const crypto = require('crypto-js/sha512')
+const withdrawl = require('./models/withdrawl.js')
 router.use(express.json())
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(cookieParser());
+
+
+
 router.get('/', (req, res) => {
   res.render("home")
+})
+
+router.get('/sign-up', (req,res) => {
+    res.render("signup");
+})
+
+router.post('/createWallet', async (req, res) => {
+    var {fname, lname, email, password, phone} = req.body;
+    
+    if(!fname || !lname || !email || !password || !phone)
+    {
+     res.json({code: 404, message:'Enter all the fields'})
+    }
+    
+    var temp_verification_id = uuid + Date.now()
+    let hashedPassword = await bcrypt.hash(password, 10);
+    const new_wallet = new wallet({fname, lname, email, password: hashedPassword, phone, verifyId: temp_verification_id});
+    new_wallet.save().then((confirmation)=>{
+                  res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'}
+                   
+                  
+                  
+                  
+                  
+                  
+                  )
+                  send_verification_mail(temp_verification_id, email)
+    }).catch((error)=>{
+      if(error.code ==11000)
+      res.json({code: 404, message:'User already registed with the given email ID'})
+      else
+      {  console.log(error)
+          res.json({code: 404, message:'Some Error Occured, Please try after some time'})
+      }
+    })
+})
+
+async function loginChecker(req,res,next)
+{
+    var token = req.cookies.jwt;
+    if(!token)
+    {
+        next();
+    }
+    else
+    {
+       
+        try{
+        
+            let payload = jwt.verify(token, process.env.password);
+          
+            res.redirect("/console")
+             //console.log(tempUser)
+    
+        }
+        catch(error)
+        {
+            next();
+        }
+
+    }
+   
+
+}
+
+router.get('/login',loginChecker, (req,res) => {
+    res.render("login");
 })
 
 router.post("/login", async (req,res)=>{
@@ -61,6 +132,9 @@ router.post("/login", async (req,res)=>{
      
 
 })
+
+
+
 async function checkVerfied(req,res, next)
 {
     if(!req.cookies.jwt)
@@ -94,33 +168,6 @@ async function checkVerfied(req,res, next)
         }
     }
 }
-async function loginChecker(req,res,next)
-{
-    var token = req.cookies.jwt;
-    if(!token)
-    {
-        next();
-    }
-    else
-    {
-       
-        try{
-        
-            let payload = jwt.verify(token, process.env.password);
-          
-            res.redirect("/console")
-             //console.log(tempUser)
-    
-        }
-        catch(error)
-        {
-            next();
-        }
-
-    }
-   
-
-}
 
 async function loginVerifier(req,res,next)
 {
@@ -148,13 +195,9 @@ async function loginVerifier(req,res,next)
 
 }
 
-router.get('/sign-up', (req,res) => {
-    res.render("signup");
-})
 
-router.get('/login',loginChecker, (req,res) => {
-    res.render("login");
-})
+
+
 
 router.get("/console", checkVerfied, async (req,res)=>
 {
@@ -242,37 +285,21 @@ router.get("/getinfo", async (req,res)=>{
     }
 })
 
-router.post('/createWallet', async (req, res) => {
-       var {fname, lname, email, password, phone} = req.body;
-       
-       if(!fname || !lname || !email || !password || !phone)
-       {
-        res.json({code: 404, message:'Enter all the fields'})
-       }
-       
-       var temp_verification_id = uuid + Date.now()
-       let hashedPassword = await bcrypt.hash(password, 10);
-       const new_wallet = new wallet({fname, lname, email, password: hashedPassword, phone, verifyId: temp_verification_id});
-       new_wallet.save().then((confirmation)=>{
-                     res.json({code: 200, message: 'Wallet Created Successfully, Please check your email and verify'}
-                      
-                     
-                     
-                     
-                     
-                     
-                     )
-                     send_verification_mail(temp_verification_id, email)
-       }).catch((error)=>{
-         if(error.code ==11000)
-         res.json({code: 404, message:'User already registed with the given email ID'})
-         else
-         {  console.log(error)
-             res.json({code: 404, message:'Some Error Occured, Please try after some time'})
-         }
-       })
-})
 
+
+
+
+router.get('/walletVerify/:id',async (req,res)=>{
+    id = req.params.id
+    wallet.findOneAndUpdate({verifyId: id}, {verified: true}).then((confirmation)=>{
+     if(confirmation)
+     res.render("wallet_verified")
+     else
+     res.render("error_in_verification")
+    }).catch((error)=>{
+    res.render("error_in_verification")
+    })
+ })
 router.post('/deposit-success', async (req, res)=>{
    // console.log(req.body)
     res.render("deposit_success")
@@ -280,11 +307,16 @@ router.post('/deposit-success', async (req, res)=>{
    // console.log(id)
     if(req.body.status=='success')
     {
+        try{
         let user = await wallet.findById({_id: id});
         let {balance} = user;
         let temp_transaction = new transactions({from:'Bank Deposit Success', to: id, amount: parseFloat(req.body.net_amount_debit)})
         await temp_transaction.save();
         let updated_account = await wallet.findByIdAndUpdate({_id: id}, {balance: balance+parseFloat(req.body.net_amount_debit)});
+        }catch(error)
+        {
+            console.log(error)
+        }
         //console.log(updated_account);
     }
 })
@@ -295,14 +327,17 @@ router.post("/deposit-failure", async (req,res)=>{
     res.render("deposit_failure");
     let id = req.body.txnid.split("-")[0];
    // console.log(id)
-    if(req.body.status=='failure')
-    {
+     try{
         let user = await wallet.findById({_id: id});
         let {balance} = user;
         let temp_transaction = new transactions({from:'Bank Deposit Failure', to: id, amount: parseFloat(req.body.net_amount_debit)})
         await temp_transaction.save();
         //console.log(updated_account);
-    }
+     }
+     catch(error)
+     {
+         console.log(error)
+     }
 })
 
 router.get("/deposit", loginVerifier, async (req,res)=>{
@@ -320,28 +355,14 @@ router.get('/updateInvestments', async (req,res)=>{
        let user_list = await wallet.find({})
        for(let i=0; i<user_list.length; i++)
        {
-           user_list[i].currentInvestment = user_list[i].investment*priceList[0].price;
+           user_list[i].currentInvestment = parseInt(user_list[i].currentInvestment + (user_list[i].investment*priceList[0].price)/100);
            await user_list[i].save()
 
        }
        res.json({code: 200, message: 'Done'})
 })
 
-router.get('/walletVerify/:id',async (req,res)=>{
-   id = req.params.id
-   wallet.findOneAndUpdate({verifyId: id}, {verified: true}).then((confirmation)=>{
-    if(confirmation)
-    res.render("wallet_verified")
-    else
-    res.render("error_in_verification")
-   }).catch((error)=>{
-   res.render("error_in_verification")
-   })
-})
 
-router.get('/hashgenerator', (req,res)=>{
-  
-})
 
 function send_verification_mail(temp_verification_id, email)
 {
@@ -563,9 +584,28 @@ res.render("deposit_failure.ejs")
 })
 
 
+router.get('/invest', loginVerifier, (req,res)=>{
+  res.render("invest")
+})
 
+router.post("/invest",loginVerifier,async (req,res)=>{
+    let payload = jwt.verify(req.cookies.jwt, process.env.password)
+    let user = await wallet.findById({_id: payload.id})
+    if(user.balance >= parseFloat(req.body.amount))
+    {
+        user.investment = user.investment + parseFloat(req.body.amount)
+        user.balance = user.balance - parseFloat(req.body.amount);
+        await user.save();
+        res.json({message: 'Successfully Invested ! '})
 
-
+    }
+    else
+    {
+        res.json({message: 'Insufficient Balance ! '})
+    }
+  
+    
+})
 
 
 router.get("/prices",async (req,res)=>{
@@ -576,7 +616,108 @@ router.get("/prices",async (req,res)=>{
 
 })
 
+router.get("/transfer", loginVerifier, async (req,res)=>{
+    res.render("transfer")
+})
 
+router.post("/transfer", loginVerifier,  async(req, res)=>{
+    try{
+    let payload = jwt.verify(req.cookies.jwt, process.env.password)
+    let sender = await wallet.findById({_id: payload.id})
+    
+    //console.log(receiver)
+    if(sender.balance>= parseFloat(req.body.amount))
+    {     //console.log(sender.balance);
+        try{   
+        sender.balance = sender.balance - parseFloat(req.body.amount);
+           
+           let temp = await sender.save()
+          // console.log(temp);
+           let receiver = await wallet.findById({_id: req.body.address})
+           receiver.balance = receiver.balance + parseFloat(req.body.amount);
+           await receiver.save()
+           let temp_trans = new transactions({from:sender._id, to: receiver._id, amount: parseFloat(req.body.amount)});
+           await temp_trans.save()
+           res.json({message: 'Money Transferred ! '});
+        }
+        catch(error)
+        {
+            res.json({message: 'Some Error Occured'})
+        }
+    }
+    else
+    {
+        res.json({message:'Insufficient Balance !'});
+    }
+    }
+    catch(error)
+    {
+        res.json({message: 'Receiver Address Not Found !'})
+    }
+    
+
+   
+})
+
+router.get("/withdrawl", loginVerifier, async(req,res)=>{
+    res.render("withdrawl")
+})
+router.post("/withdrawl", loginVerifier, async(req,res)=>{
+
+    let payload = jwt.verify(req.cookies.jwt, process.env.password)
+    try{
+    let user = await wallet.findById({_id: payload.id})
+    if(user.balance>=parseFloat(req.body.amount))
+    {
+        let temp_withdrawl = new withdrawl({from: user._id, name: user.fname, email: user.email, amount: parseFloat(req.body.amount), type_withdrawl: 'simple' })
+        user.balance = user.balance - parseFloat(req.body.amount);
+        await user.save();
+        temp_withdrawl.save();
+        let temp_transaction = new transactions({from: user._id, to: 'Withdrawl', amount: parseFloat(req.body.amount)});
+        await temp_transaction.save();
+        res.json({message: 'Withdrawl Request Submitted ! '})
+    }
+    else
+    {
+        res.json({message: 'Insufficient Funds ! '})
+    }
+}catch(error){
+    res.json({message: 'Some Error Occured ! '})
+}
+})
+
+router.get("/investmentWithdrawl", loginVerifier, async(req,res)=>{
+    res.render("investment_withdrawl.ejs")
+})
+router.post("/investmentWithdrawl", loginVerifier, async(req,res)=>{
+
+    let payload = jwt.verify(req.cookies.jwt, process.env.password)
+    try{
+    let user = await wallet.findById({_id: payload.id})
+    if(user.currentInvestment>=parseFloat(req.body.amount))
+    {
+        let temp_withdrawl = new withdrawl({from: user._id, name: user.fname, email: user.email, amount: parseFloat(req.body.amount), type_withdrawl: 'investment' })
+        user.currentInvestment = user.currentInvestment - parseFloat(req.body.amount);
+        await user.save();
+        temp_withdrawl.save();
+        let temp_transaction = new transactions({from: user._id, to: 'Investment Withdrawl', amount: parseFloat(req.body.amount)});
+        await temp_transaction.save();
+        res.json({message: 'Withdrawl Request Submitted ! '})
+    }
+    else
+    {
+        res.json({message: 'Insufficient Funds ! '})
+    }
+}catch(error){
+    res.json({message: 'Some Error Occured ! '})
+}
+})
+
+router.get("/admin/console", async (req,res)=>{
+    let withdrawl_requests_true = await withdrawl.find({status:true});
+    let withdrawl_requests_false = await withdrawl.find({status:false});
+    res.render("admin", {withdrawl_requests_true, withdrawl_requests_false})
+})
 
 
 

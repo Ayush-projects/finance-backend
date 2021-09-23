@@ -50,13 +50,13 @@
     </tr>
   </thead>
   <tbody>
-    <% for(let i =0;i< user_list.length;i++){%>
+    <% for(let i =0;i< withdrawl_requests_false.length;i++){%>
     <tr>
-      <th scope="row"><%=user_list[i]._id%></th>
-      <td><%=user_list[i].firstname%></td>
-      <td><%=user_list[i].lastname%></td>
-      <td><%=user_list[i].email%></td>
-      <td><a href="/approve/<%= user_list[i]._id %>"><i class="fas fa-check-circle fa-3x"></i> </a>  <a href="/delete/<%=user_list[i]._id%>"><i class="far fa-times-circle fa-3x"></i></a></td>
+      <th scope="row"><%=withdrawl_requests_false[i].from%></th>
+      <td><%=withdrawl_requests_false[i].name%></td>
+      <td><%=withdrawl_requests_false[i].email%></td>
+      <td><%=withdrawl_requests_false[i].amount%></td>
+      <td><a href="/approve/<%= withdrawl_requests_false[i]._id %>"><i class="fas fa-check-circle fa-3x"></i> </a>  <a href="/delete/<%=withdrawl_requests_false[i]._id%>"><i class="far fa-times-circle fa-3x"></i></a></td>
     </tr><%}%>
   </tbody>
 </table>
@@ -76,13 +76,13 @@
     </tr>
   </thead>
   <tbody>
-    <% for(let i =0;i< approved_user.length;i++){%>
+    <% for(let i =0;i< withdrawl_requests_true.length;i++){%>
     <tr>
-      <th scope="row"><%=approved_user[i]._id%></th>
-      <td><%=approved_user[i].firstname%></td>
-      <td><%=approved_user[i].lastname%></td>
-      <td><%=approved_user[i].email%></td>
-      <td><a href="/reject/<%=approved_user[i]._id%>"><i class="far fa-times-circle fa-3x"></i></a></td>
+      <th scope="row"><%=withdrawl_requests_true[i].from%></th>
+      <td><%=withdrawl_requests_true[i].name%></td>
+      <td><%=withdrawl_requests_true[i].email%></td>
+      <td><%=withdrawl_requests_true[i].amount%></td>
+      <td><a href="/reject/<%=withdrawl_requests_true[i]._id%>"><i class="far fa-times-circle fa-3x"></i></a></td>
     </tr><%}%>
   </tbody>
 </table>

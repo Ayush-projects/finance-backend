@@ -33,10 +33,10 @@
 			<i class="fa fa-long-arrow-right arrow1"></i>
 			
            
-            <button class="fin-btn">Investment Withdraw</button>
-            <button class="fin-btn">Withdraw</button>
-            <button class="fin-btn">Transfer Money</button>
-            <button class="fin-btn">Invest</button>
+            <a href="/investmentWithdrawl"><button class="fin-btn">Investment Withdraw</button></a>
+            <a href="/withdrawl"><button class="fin-btn">Withdraw</button></a>
+            <a href="/transfer"><button class="fin-btn">Transfer Money</button></a>
+            <a href="/invest"><button class="fin-btn">Invest</button></a>
            <a href="/deposit"><button class="fin-btn">Deposit</button></a> 
 
 			<div class="clearfix"></div>
@@ -70,7 +70,7 @@
 				<div class="clearfix"></div>
 				<br>
 				<div>
-					<p class="p-1">Investment Analysis <span>Autoupdated at 24 hrs</span></p>
+					<p class="p-1">Investment Analysis Returns <span>Autoupdated at 24 hrs and T-9 days oversight</span></p>
 					<br>
 					<svg id="line" width="96%" class="chart-svg"></svg>
 				</div>
@@ -87,10 +87,10 @@
 			<p class="p2">R</p><p class="head">₹ <%=all_transaction[i].amount %> <br><span>From: <strong><%=all_transaction[i].from %></strong></span></p>
 			<i class="fa fa-ellipsis-h dots"></i>
 		</div>
-		<% } else if(id==all_transaction[i].from){%>
+		<% } else{%>
         
 		<div class="nub-sec">
-			<p class="p2" style="background: #f5d1d1; color: #957272;">S</p><p class="head">₹ <%=all_transaction[i].amount%> <br><span>To:  <strong><%=all_transaction[i].from %></strong></span></p>
+			<p class="p2" style="background: #f5d1d1; color: #957272;">S</p><p class="head">₹ <%=all_transaction[i].amount%> <br><span>To:  <strong><%=all_transaction[i].to %></strong></span></p>
 			<i class="fa fa-ellipsis-h dots"></i>
 		</div>
 		<%}  %>
