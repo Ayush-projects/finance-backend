@@ -132,32 +132,34 @@ __URL     :__   https://epotli-wallet.herokuapp.com/getInfo
 ### Response
 
 #### Case 1 : If there is a “jwt” token stored as cookie (When successful login), it will return all the account information
-      {
-  "fname": "Ayush",
-  "lname": "Addhyan",
-  "email": "kayush479@gmail.com",
-  "phone": "9801254033",
-  "balance": 1,
-  "investment": 0,
-  "currentInvestment": 0,
-  "verified": true
-     }
+    
+  
+    {
+     "fname": "Ayush",
+     "lname": "Addhyan",
+     "email": "kayush479@gmail.com",
+     "phone": "9801254033",
+     "balance": 1,
+     "investment": 0,
+     "currentInvestment": 0,
+     "verified": true
+    }
 
 
 #### Case 2 : If the token is not stored (i.e. the user is not logged in) then it will return 
 
-  {
-  "code": 404,
-  "message": "You need to login first."
-  }
+     {
+     "code": 404,
+     "message": "You need to login first."
+     }
 
 
 #### Case 3 : If there is some server side error it will return 
 
-  {
-  "code": 404,
-  "message": "Some error occured"
-  }
+     {
+       "code": 404,
+       "message": "Some error occured"
+     }
 
 
 ## Get Price Index for last 10 days relative to Re.1
@@ -173,8 +175,8 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
 
 ### Response
 
-  {  
-  "priceList": [
+    {  
+     "priceList": [
      {
       "_id": "6146f7491a24d75f1b0c149f",
       "onDate": "2021-09-19T00:00:00.000Z",
@@ -182,7 +184,7 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
       "__v": 0
     }
     ] ....
-  }  
+    }  
     
 
 
