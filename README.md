@@ -45,7 +45,10 @@ __Body    :__
 
 #### Case 2: Either of the fields missing in POST request
 
-    Response
+     {
+        "code": 404,
+        "message": "Enter all the fields"
+     }
 
 #### Case 3: User registering again with same email id
 
