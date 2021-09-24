@@ -173,12 +173,13 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
 
   {  
   "priceList": [
-    {
+     {
       "_id": "6146f7491a24d75f1b0c149f",
       "onDate": "2021-09-19T00:00:00.000Z",
       "price": 0.5,
       "__v": 0
-    }] 
+    }
+    ] ....
   }  
     
 
