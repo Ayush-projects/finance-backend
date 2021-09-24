@@ -235,6 +235,6 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
     }
   ]
 }
-}
+
 
 
