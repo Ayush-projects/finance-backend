@@ -131,9 +131,8 @@ __URL     :__   https://epotli-wallet.herokuapp.com/getInfo
 
 ### Response
 
-#### Case 1 : If there is a “jwt” token stored as cookie (When successful login), it will return all the account information.
-
-   {
+#### Case 1 : If there is a “jwt” token stored as cookie (When successful login), it will return all the account information
+      {
   "fname": "Ayush",
   "lname": "Addhyan",
   "email": "kayush479@gmail.com",
@@ -142,7 +141,7 @@ __URL     :__   https://epotli-wallet.herokuapp.com/getInfo
   "investment": 0,
   "currentInvestment": 0,
   "verified": true
- }
+     }
 
 
 #### Case 2 : If the token is not stored (i.e. the user is not logged in) then it will return 
@@ -150,7 +149,7 @@ __URL     :__   https://epotli-wallet.herokuapp.com/getInfo
   {
   "code": 404,
   "message": "You need to login first."
- }
+  }
 
 
 #### Case 3 : If there is some server side error it will return 
