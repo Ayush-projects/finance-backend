@@ -56,7 +56,10 @@ __Body    :__
     
 #### Case 4: Some server side error occurred
 
-    Response 
+    {
+        "code": 404,
+        "message": "Some Error Occured"
+    } 
 
 
 
