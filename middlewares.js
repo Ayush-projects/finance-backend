@@ -1,15 +1,1 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = {Ayush: 'Ayush'}
+module.exports = { Ayush: "Ayush" };
