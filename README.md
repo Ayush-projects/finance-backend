@@ -5,7 +5,7 @@
 
 ## Base URL
 
-https://ewallet-server.herokuapp.com
+https://epotli-wallet.herokuapp.com/
     
     
 # API Documentation
@@ -19,7 +19,7 @@ __Action  :__   Create Wallet
 
 __Method  :__   POST
 
-__URL     :__   https://ewallet-server.herokuapp.com/createWallet
+__URL     :__   https://epotli-wallet.herokuapp.com/createWallet
 
 __Body    :__
   
@@ -68,7 +68,7 @@ __Action  :__   Login
 
 __Method  :__   POST
 
-__URL     :__   https://ewallet-server.herokuapp.com/login
+__URL     :__   https://epotli-wallet.herokuapp.com/login
 
 __Body    :__
   
@@ -106,7 +106,7 @@ __Action  :__   Logout
 
 __Method  :__   GET
 
-__URL     :__   https://ewallet-server.herokuapp.com/signout
+__URL     :__   https://epotli-wallet.herokuapp.com/signout
 
 
 > **_NOTE  :_** **Request with the jwt token as cookies and in response the server will clear the cookie “jwt”**
@@ -120,7 +120,7 @@ __Action  :__   Get Wallet Info
 
 __Method  :__   GET
 
-__URL     :__   https://ewallet-server.herokuapp.com/getInfo
+__URL     :__   https://epotli-wallet.herokuapp.com/getInfo
   
 
 ### Response
@@ -148,7 +148,7 @@ __Action    :__     Get Price Index for last 10 days relative to Re.1
 
 __Method    :__     GET
 
-__URL       :__     https://ewallet-server.herokuapp.com/prices 
+__URL       :__     https://epotli-wallet.herokuapp.com/prices 
     
 
 ### Response
