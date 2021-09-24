@@ -81,7 +81,7 @@ __Body    :__
      {
         "email":"kryptonites.ju@gmail.com",
         "password": "Ayush"
-    }
+     }
     
 
 ### Response
