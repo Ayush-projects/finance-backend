@@ -130,17 +130,32 @@ __URL     :__   https://epotli-wallet.herokuapp.com/getInfo
 
 #### Case 1 : If there is a “jwt” token stored as cookie (When successful login), it will return all the account information.
 
-    xyz
+   {
+  "fname": "Ayush",
+  "lname": "Addhyan",
+  "email": "kayush479@gmail.com",
+  "phone": "9801254033",
+  "balance": 1,
+  "investment": 0,
+  "currentInvestment": 0,
+  "verified": true
+ }
 
 
 #### Case 2 : If the token is not stored (i.e. the user is not logged in) then it will return 
 
-    xyz
+  {
+  "code": 404,
+  "message": "You need to login first."
+ }
 
 
 #### Case 3 : If there is some server side error it will return 
 
-    xyz
+  {
+  "code": 404,
+  "message": "Some error occured"
+  }
 
 
 ## Get Price Index for last 10 days relative to Re.1
@@ -156,6 +171,70 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
 
 ### Response
 
-    xyz
+  {  
+  "priceList": [
+    {
+      "_id": "6146f7491a24d75f1b0c149f",
+      "onDate": "2021-09-19T00:00:00.000Z",
+      "price": 0.5,
+      "__v": 0
+    },
+    {
+      "_id": "6146f75f7ada8ac5e010c4b7",
+      "onDate": "2021-09-18T00:00:00.000Z",
+      "price": 1.7,
+      "__v": 0
+    },
+    {
+      "_id": "6146f77384b3cd320f130863",
+      "onDate": "2021-09-17T00:00:00.000Z",
+      "price": 0.9,
+      "__v": 0
+    },
+    {
+      "_id": "6146f78604ca5bc3504e2aeb",
+      "onDate": "2021-09-16T00:00:00.000Z",
+      "price": 1.1,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7982ca806b5e6fdd36e",
+      "onDate": "2021-09-15T00:00:00.000Z",
+      "price": 0.7,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7a6b73b7197f2c408a6",
+      "onDate": "2021-09-14T00:00:00.000Z",
+      "price": 0.65,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7c3f6c5a19381ed0df8",
+      "onDate": "2021-09-13T00:00:00.000Z",
+      "price": 0.9,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7d7721654e3ad7c956f",
+      "onDate": "2021-09-12T00:00:00.000Z",
+      "price": 0.95,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7e306346cb0054cce05",
+      "onDate": "2021-09-11T00:00:00.000Z",
+      "price": 1.1,
+      "__v": 0
+    },
+    {
+      "_id": "6146f7f16853e0cc0f3224f7",
+      "onDate": "2021-09-10T00:00:00.000Z",
+      "price": 1.4,
+      "__v": 0
+    }
+  ]
+}
+}
 
 
