@@ -1,4 +1,4 @@
-<div align="center"> <img align="center" alt="Chords" src="https://user-images.githubusercontent.com/52379890/133371696-2488b42d-62fa-4210-b49f-9ebfea97fcd0.png" height='500' width='500'></div>
+<div align="center"> <img align="center" alt="Chords" src="https://user-images.githubusercontent.com/52379890/133371696-2488b42d-62fa-4210-b49f-9ebfea97fcd0.png" height='400' width='600'></div>
 
 # E-POTLI
 (Project description)
