@@ -178,8 +178,7 @@ __URL       :__     https://epotli-wallet.herokuapp.com/prices
       "onDate": "2021-09-19T00:00:00.000Z",
       "price": 0.5,
       "__v": 0
-    }]
-    
+    }] 
   }  
     
 
