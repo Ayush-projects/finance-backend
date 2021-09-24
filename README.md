@@ -3,6 +3,16 @@
 # E-POTLI
 (Project description)
 
+## Deployment
+
+Config.env file should have to provided which contains following field:
+1. PORT
+2. dbURL
+3. email
+4. password
+
+__Command :__ npm start
+
 ## Base URL
 
 https://epotli-wallet.herokuapp.com/
